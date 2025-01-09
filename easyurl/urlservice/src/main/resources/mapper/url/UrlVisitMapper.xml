@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cczj.urlservice.mapper.url.UrlVisitMapper">
+
+
+    <select id="selectVisitList" resultType="com.cczj.urlbean.vo.UrlVisitListVO">
+        select
+            uv.*,
+            um.origin_url,
+            um.short_url
+        from url_visit uv left join url_mapping um on um.id = uv.url_id
+        <where>
+            <if test="params.beginDate!=null and params.beginDate!=''">
+                and uv.create_time &gt;= #{params.beginDate}
+            </if>
+            <if test="params.endDate!=null and params.endDate!=''">
+                and uv.create_time &lt;= #{params.endDate}
+            </if>
+            <if test="params.shortUrl!=null and params.shortUrl!=''">
+                and uv.url_id in (select id from url_mapping where short_url = #{params.shortUrl})
+            </if>
+        </where>
+        order by uv.id desc
+    </select>
+
+    <select id="selectVisitLead" resultType="com.cczj.urlbean.vo.UrlVisitLeadVo">
+        select
+            um.short_url,
+            t.total
+        from (
+                 select
+                     uv.url_id,
+                     count(*) as total
+                 from url_visit uv
+                 where uv.create_time >=#{beginTime}
+                 group by uv.url_id
+                 order by total desc
+                 limit 10
+        ) t  left join  url_mapping um on t.url_id = um.id
+    </select>
+</mapper>
