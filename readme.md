@@ -45,7 +45,6 @@
           add_header Cache-Control no-cache;
           proxy_ssl_server_name off;
           add_header Strict-Transport-Security "max-age=31536000";
-          #支持跨域
           add_header 'Access-Control-Allow-Origin' * always;
           add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
           add_header 'Access-Control-Allow-Headers' '*';
