@@ -1,0 +1,28 @@
+spring:
+  redis:
+    host: test
+    password: test
+    timeout: 10000
+    port: 6379
+    database: 0
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://test:3306/easyurl2?useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true&useAffectedRows=true
+    username: 'test'
+    password: 'test'
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 60000
+      max-lifetime: 600000
+      minimum-idle: 2
+      maximum-pool-size: 20
+
+logback.path: /opt/workspace/logs/easyurl/
+
+url:
+  notfound-url: https://www.a.com/easyurl/404.html
+  baseUrl: https://www.a.com/d/
+
+knife4j:
+  enable: false

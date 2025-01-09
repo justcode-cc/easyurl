@@ -1,0 +1,1 @@
+import{U as t}from"./index-DXY0VLZ8.js";const l={list(r){return t({url:"/url/list",data:r})},visitList(r){return t({url:"/url/visitList",data:r})},generate(r){return t({url:"/url/generate",data:r})},offline(r){return t({url:"/url/offline",data:r})}};export{l as _};

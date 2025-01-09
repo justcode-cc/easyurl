@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cczj.urlservice.mapper.url.UrlMappingMapper">
+
+
+
+    <select id="selectForPage" resultType="com.cczj.urlbean.vo.UrlMappingListVO">
+        select um.id,
+            um.origin_url,
+            um.short_url,
+            um.expire_time,
+            um.create_time,
+            um.status,
+            um.update_time,
+            (select su.username
+            from sys_user su,
+            sys_user_job suj
+            where suj.id = um.create_user_id
+            and suj.user_id = su.id) as create_user
+        from url_mapping um
+        <where>
+            <if test="params.beginDate!=null and params.beginDate!=''">
+                and um.create_time &gt;= #{params.beginDate}
+            </if>
+            <if test="params.endDate!=null and params.endDate!=''">
+                and um.create_time &lt;= #{params.endDate}
+            </if>
+            <if test="params.status!=null">
+                and um.status = #{params.status}
+            </if>
+        </where>
+        order by um.id desc
+    </select>
+
+    <select id="selectTotal" resultType="int">
+        select count(*) from url_mapping um where um.create_time &lt;= #{time}
+    </select>
+
+    <select id="selectAdd" resultType="int">
+        select count(*) from url_mapping um where um.create_time between #{beginTime} and #{endTime}
+    </select>
+
+    <select id="selectValid" resultType="int">
+        select count(*) from url_mapping um where um.expire_time >= #{time}
+    </select>
+
+    <select id="selectTimeout" resultType="java.lang.Long">
+        select um.id
+        from url_mapping um
+        where um.expire_time &lt;= #{expireTime}
+        and um.status = 1
+    </select>
+
+    <select id="getWeekAddUrl" resultType="com.cczj.common.dto.KvResult">
+        SELECT
+            t.d as name,
+            COUNT( t.d ) as value
+        FROM
+            ( SELECT DATE_FORMAT( um.create_time, '%Y-%m-%d' ) d FROM url_mapping um WHERE um.create_time >= #{beginTime} ) t
+        GROUP BY
+            t.d
+    </select>
+
+    <select id="selectTotalV2" resultType="int">
+        select count(*) from url_mapping um where um.create_time >= #{beginTime}
+    </select>
+
+    <select id="selectExpire" resultType="int">
+        select count(*) from url_mapping um where um.create_time &gt;= #{beginTime} and um.expire_time &lt;= #{expireTime}
+    </select>
+</mapper>
